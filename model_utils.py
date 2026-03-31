@@ -110,10 +110,11 @@ if __name__ == "__main__":
         # 2. Define the target column exactly as it appears in your dataset
         target_col = "OUTCOME High/Low LC, LP, BP"
         
-        # 3. Pick a few models to test (matching the dictionary keys in your code)
-        test_models = ["Random Forest", "Linear Regression", "XGBoost"]
+        # 3. Pick a few classification models to test 
+        test_models = ["Random Forest", "Logistic Regression", "XGBoost"]
         
-        print(f"Starting training for models: {test_models}...")
+        print(f"Starting classification training for models: {test_models}...")
+        print("Filtering for Lipid Productivity (HLP vs LLP)...")
         
         # 4. Call your function
         output_data = train_all_models(df, target=target_col, selected_models=test_models)
@@ -124,7 +125,8 @@ if __name__ == "__main__":
         
         print("\nIndividual Model Performance:")
         for res in output_data['results']:
-            print(f"  -> {res['name']}: R² = {res['r2']:.4f} | RMSE = {res['rmse']:.4f}")
+            # Displaying Accuracy as a percentage to match the paper
+            print(f"  -> {res['name']}: Accuracy = {res['accuracy'] * 100:.2f}% | F1 Score = {res['f1_score']:.4f}")
             
     except FileNotFoundError:
         print(f"❌ Error: Could not find the file '{csv_filename}'. Make sure it is in the same folder.")

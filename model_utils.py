@@ -5,9 +5,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from xgboost import XGBClassifier
 from sklearn.neural_network import MLPClassifier
 
-from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score
 from sklearn.feature_selection import VarianceThreshold
 
 import pandas as pd
@@ -16,13 +16,11 @@ import numpy as np
 # ================= TRAINING =================
 def train_all_models(df, target, selected_models):
 
-    # 1. FILTER FOR ONLY ONE METRIC (e.g., Lipid Productivity - LP)
-    # The paper trains 3 separate models. We will isolate the LP rows (HLP and LLP)
+    # 1. FILTER FOR ONLY ONE METRIC (Lipid Productivity - LP)
     df = df.dropna(subset=[target]).copy()
-    df = df[df[target].isin(['HLP', 'LLP'])] # Only keep High LP and Low LP rows
+    df = df[df[target].isin(['HLP', 'LLP'])] 
     
     # 2. BINARY ENCODING
-    # HLP (High Lipid Productivity) = 1, LLP (Low Lipid Productivity) = 0
     y = df[target].map({'HLP': 1, 'LLP': 0})
     X_full = df.drop(columns=[target])
 
@@ -52,14 +50,14 @@ def train_all_models(df, target, selected_models):
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    # 7. CLASSIFICATION MODELS (Using the exact Hyperparameters from Table 3)
+    # 7. CLASSIFICATION MODELS 
     all_models = {
         "Random Forest": RandomForestClassifier(n_estimators=50, max_depth=20, min_samples_split=2, min_samples_leaf=2, random_state=42),
-        "SVM": SVC(probability=True),
-        "Logistic Regression": LogisticRegression(max_iter=1000),
+        "SVM": SVC(probability=True, random_state=42),
+        "Logistic Regression": LogisticRegression(max_iter=1000, random_state=42),
         "KNN": KNeighborsClassifier(),
-        "XGBoost": XGBClassifier(use_label_encoder=False, eval_metric='logloss'),
-        "ANN": MLPClassifier(max_iter=500)
+        "XGBoost": XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42),
+        "ANN": MLPClassifier(max_iter=500, random_state=42)
     }
 
     models = {k: all_models[k] for k in selected_models}
@@ -72,14 +70,13 @@ def train_all_models(df, target, selected_models):
         model.fit(X_train_scaled, y_train)
         pred = model.predict(X_test_scaled)
 
-        # Use Classification Metrics instead of R2 and RMSE
         acc = accuracy_score(y_test, pred)
         f1 = f1_score(y_test, pred)
 
         results.append({
             "name": name,
-            "accuracy": acc, # Replaced R2
-            "f1_score": f1   # Replaced RMSE
+            "accuracy": acc, 
+            "f1_score": f1   
         })
 
         trained_models[name] = model
@@ -92,43 +89,96 @@ def train_all_models(df, target, selected_models):
         "results": results,
         "best_model": best_model,
         "scaler": scaler,
-        "feature_names": list(X.columns)
+        "feature_names": list(X.columns),
+        "X": X # <-- Added this back so predict/optimize don't crash
     }
+
+# ================= PREDICTION =================
+def predict_best(input_dict, data):
+    model = data["models"][data["best_model"]]
+    scaler = data["scaler"]
+    X = data["X"]
+    features = data["feature_names"]
+
+    df = pd.DataFrame([input_dict])
+
+    # Ensure correct column order
+    df = df.reindex(columns=features)
+
+    # Fill missing values
+    for col in df.columns:
+        if df[col].iloc[0] == "" or pd.isna(df[col].iloc[0]):
+            df[col] = X[col].mean()
+        else:
+            df[col] = float(df[col])
+
+    df_scaled = scaler.transform(df)
+    
+    # Returns the PROBABILITY of High Lipid Productivity (Class 1)
+    if hasattr(model, "predict_proba"):
+        return round(model.predict_proba(df_scaled)[0][1], 4)
+    else:
+        return int(model.predict(df_scaled)[0])
+
+# ================= OPTIMIZATION =================
+def optimize_inputs(data, mode="max", n_iter=1000):
+    model = data["models"][data["best_model"]]
+    scaler = data["scaler"]
+    X = data["X"]
+    features = data["feature_names"]
+
+    if mode == "max":
+        best_output = -np.inf
+    else:
+        best_output = np.inf
+
+    best_input = None
+
+    for _ in range(n_iter):
+        sample = []
+        for col in features:
+            val = np.random.uniform(X[col].min(), X[col].max())
+            sample.append(val)
+
+        sample_array = np.array(sample).reshape(1, -1)
+        sample_scaled = scaler.transform(sample_array)
+        
+        # Optimize based on the probability of getting "High LP"
+        if hasattr(model, "predict_proba"):
+            pred = model.predict_proba(sample_scaled)[0][1]
+        else:
+            pred = int(model.predict(sample_scaled)[0])
+
+        if mode == "max":
+            if pred > best_output:
+                best_output = pred
+                best_input = sample
+        else:
+            if pred < best_output:
+                best_output = pred
+                best_input = sample
+
+    best_input_dict = dict(zip(features, best_input))
+    return best_input_dict, round(best_output, 4)
 
 # ================= LOCAL TESTING BLOCK =================
 if __name__ == "__main__":
     import pandas as pd
 
-    # 1. Load your dataset (Ensure the CSV is in the same folder as this script)
     csv_filename = "1-s2.0-S0960148125015654-mmc2.xlsx - Sheet1.csv"
     
-    print(f"Loading data from {csv_filename}...")
     try:
         df = pd.read_csv(csv_filename)
-        df.columns = df.columns.str.strip() # Clean column names like in app.py
-        
-        # 2. Define the target column exactly as it appears in your dataset
+        df.columns = df.columns.str.strip() 
         target_col = "OUTCOME High/Low LC, LP, BP"
-        
-        # 3. Pick a few classification models to test 
         test_models = ["Random Forest", "Logistic Regression", "XGBoost"]
         
-        print(f"Starting classification training for models: {test_models}...")
-        print("Filtering for Lipid Productivity (HLP vs LLP)...")
-        
-        # 4. Call your function
+        print("Training models...")
         output_data = train_all_models(df, target=target_col, selected_models=test_models)
         
-        # 5. Print out the results to verify it worked
-        print("\n✅ --- TRAINING SUCCESSFUL --- ✅")
-        print(f"Best Model Found: {output_data['best_model']}")
-        
-        print("\nIndividual Model Performance:")
+        print(f"\n✅ Best Model: {output_data['best_model']}")
         for res in output_data['results']:
-            # Displaying Accuracy as a percentage to match the paper
-            print(f"  -> {res['name']}: Accuracy = {res['accuracy'] * 100:.2f}% | F1 Score = {res['f1_score']:.4f}")
+            print(f"  -> {res['name']}: Accuracy = {res['accuracy'] * 100:.2f}%")
             
-    except FileNotFoundError:
-        print(f"❌ Error: Could not find the file '{csv_filename}'. Make sure it is in the same folder.")
     except Exception as e:
-        print(f"❌ An error occurred during training: {e}")
+        print(f"❌ Error: {e}")

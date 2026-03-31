@@ -66,9 +66,12 @@ def train_all_models(df, target, selected_models):
     trained_models = {}
 
     # 8. TRAIN LOOP
+    predictions = {}
     for name, model in models.items():
         model.fit(X_train_scaled, y_train)
         pred = model.predict(X_test_scaled)
+
+        predictions[name] = pred
 
         acc = accuracy_score(y_test, pred)
         f1 = f1_score(y_test, pred)
@@ -90,7 +93,9 @@ def train_all_models(df, target, selected_models):
         "best_model": best_model,
         "scaler": scaler,
         "feature_names": list(X.columns),
-        "X": X # <-- Added this back so predict/optimize don't crash
+        "X": X ,# <-- Added this back so predict/optimize don't crash
+        "y_test": y_test.reset_index(drop=True),
+        "predictions": predictions
     }
 
 # ================= PREDICTION =================

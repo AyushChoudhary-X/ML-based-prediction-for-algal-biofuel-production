@@ -82,8 +82,6 @@ def train():
     return redirect(url_for('dashboard'))
 
 # -------- Dashboard --------
-
-
 @app.route('/dashboard')
 def dashboard():
 
@@ -95,82 +93,38 @@ def dashboard():
 
     # -------- DATA --------
     names = [r["name"] for r in results]
-    r2_scores = [r["r2"] for r in results]
-    rmse_scores = [r["rmse"] for r in results]
+    accuracy_scores = [r["accuracy"] for r in results]
+    f1_scores = [r["f1_score"] for r in results]
 
-    # -------- R2 CHART --------
-    fig_r2 = go.Figure()
-
-    fig_r2.add_trace(go.Bar(
+    # -------- ACCURACY CHART --------
+    fig_acc = go.Figure()
+    fig_acc.add_trace(go.Bar(
         x=names,
-        y=r2_scores,
-        text=[round(x, 3) for x in r2_scores],
+        y=accuracy_scores,
+        text=[f"{x*100:.1f}%" for x in accuracy_scores],
         textposition='auto'
     ))
+    fig_acc.update_layout(title="Model Comparison (Accuracy)", xaxis_title="Models", yaxis_title="Accuracy")
+    chart_acc = json.dumps(fig_acc, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig_r2.update_layout(
-        title="Model Comparison (R² Score)",
-        xaxis_title="Models",
-        yaxis_title="R² Score"
-    )
-
-    chart_r2 = json.dumps(fig_r2, cls=plotly.utils.PlotlyJSONEncoder)
-
-    # -------- RMSE CHART --------
-    fig_rmse = go.Figure()
-
-    fig_rmse.add_trace(go.Bar(
+    # -------- F1 CHART --------
+    fig_f1 = go.Figure()
+    fig_f1.add_trace(go.Bar(
         x=names,
-        y=rmse_scores,
-        text=[round(x, 3) for x in rmse_scores],
+        y=f1_scores,
+        text=[round(x, 3) for x in f1_scores],
         textposition='auto'
     ))
-
-    fig_rmse.update_layout(
-        title="Model Comparison (RMSE)",
-        xaxis_title="Models",
-        yaxis_title="RMSE"
-    )
-
-    chart_rmse = json.dumps(fig_rmse, cls=plotly.utils.PlotlyJSONEncoder)
-
-    # -------- SCATTER --------
-    y_test = data_store["y_test"]
-    preds = data_store["predictions"][best]
-
-    fig_scatter = go.Figure()
-
-    fig_scatter.add_trace(go.Scatter(
-        x=y_test,
-        y=preds,
-        mode='markers',
-        name='Predictions'
-    ))
-
-    fig_scatter.add_trace(go.Scatter(
-        x=[min(y_test), max(y_test)],
-        y=[min(y_test), max(y_test)],
-        mode='lines',
-        name='Ideal',
-        line=dict(dash='dash')
-    ))
-
-    fig_scatter.update_layout(
-        title=f"Actual vs Predicted ({best})",
-        xaxis_title="Actual",
-        yaxis_title="Predicted"
-    )
-
-    chart_scatter = json.dumps(fig_scatter, cls=plotly.utils.PlotlyJSONEncoder)
+    fig_f1.update_layout(title="Model Comparison (F1 Score)", xaxis_title="Models", yaxis_title="F1 Score")
+    chart_f1 = json.dumps(fig_f1, cls=plotly.utils.PlotlyJSONEncoder)
 
     return render_template(
         "dashboard.html",
         active="dashboard",
         results=results,
         best=best,
-        chart_r2=chart_r2,
-        chart_rmse=chart_rmse,
-        chart_scatter=chart_scatter
+        chart_r2=chart_acc,  # Keeping variable name so HTML script doesn't break
+        chart_rmse=chart_f1  # Keeping variable name so HTML script doesn't break
     )
 
     # ---------------- SCATTER PLOT ----------------

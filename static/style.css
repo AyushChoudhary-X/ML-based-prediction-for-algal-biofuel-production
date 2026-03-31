@@ -1,0 +1,313 @@
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+}
+
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: #1e293b;
+    position: fixed;
+    padding: 20px;
+}
+
+.sidebar a {
+    display: block;
+    margin: 10px 0;
+    color: white;
+    text-decoration: none;
+}
+
+.main {
+    margin-left: 240px;
+    padding: 30px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.file-upload {
+    background: #334155;
+    padding: 10px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.file-upload input {
+    display: none;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI';
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+.main {
+    padding: 30px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+button {
+    background: #3b82f6;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #2563eb;
+}
+
+input, select {
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 6px;
+    border: none;
+    width: 250px;
+}
+
+img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+ul {
+    text-align: left;
+    margin-left: 20px;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+p {
+    color: #cbd5f5;
+}
+
+#fileName {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI';
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 230px;
+    height: 100vh;
+    position: fixed;
+    background: #020617;
+    padding: 20px;
+    border-right: 1px solid #1e293b;
+}
+
+.sidebar h2 {
+    color: #3b82f6;
+}
+
+.sidebar a {
+    display: block;
+    padding: 10px;
+    margin: 8px 0;
+    color: #cbd5f5;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.sidebar a:hover {
+    background: #1e293b;
+}
+
+/* Main content */
+.main {
+    margin-left: 250px;
+    padding: 30px;
+}
+
+/* Cards */
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* Table Preview */
+.table-container {
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #020617;
+}
+
+.table th, .table td {
+    border: 1px solid #1e293b;
+    padding: 8px;
+    text-align: center;
+}
+
+/* Labels */
+.label {
+    font-weight: bold;
+    color: #3b82f6;
+}
+
+/* Dropdown */
+.dropdown {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    background: #020617;
+    color: white;
+    width: 250px;
+}
+
+/* Model Grid */
+.model-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.model-grid label {
+    background: #020617;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.model-grid input {
+    margin-right: 8px;
+}
+
+.select-all {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #22c55e;
+}
+
+img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+/* Table (shared style) */
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #020617;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table th {
+    background: #1e293b;
+    color: #3b82f6;
+    padding: 10px;
+}
+
+.table td {
+    border-top: 1px solid #1e293b;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Hover effect */
+.table tr:hover {
+    background: #1e293b;
+}
+
+/* Best model highlight */
+.best-row {
+    background: #065f46 !important;
+    font-weight: bold;
+}
+
+/* Input grid */
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+/* Inputs */
+input[type="number"] {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    background: #020617;
+    color: white;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px;
+    color: #ccc;
+    text-decoration: none;
+    border-radius: 8px;
+    margin: 5px 0;
+}
+
+.sidebar a:hover {
+    background: #1f2937;
+}
+
+.sidebar a.active {
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+}
+
+.dropdown {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+.dropdown:focus {
+    border-color: #16a34a;
+    outline: none;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #2563eb;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+}

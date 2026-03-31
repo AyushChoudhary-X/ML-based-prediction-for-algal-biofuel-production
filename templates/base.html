@@ -1,0 +1,19 @@
+<link rel="stylesheet" href="/static/style.css">
+
+<div class="sidebar">
+    <h2>AD ML</h2>
+    <a href="/" class="{% if active=='index' %}active{% endif %}">Home</a>
+    <a href="/train" class="{% if active=='train' %}active{% endif %}">Train</a>
+    <a href="/dashboard" class="{% if active=='dashboard' %}active{% endif %}">Dashboard</a>
+    <a href="/predict" class="{% if active=='predict' %}active{% endif %}">Prediction</a>
+    <a href="/feature_importance" class="{% if active=='feature_importance' %}active{% endif %}">Feature Importance</a>
+    <a href="/shap" class="{% if active=='shap' %}active{% endif %}">SHAP</a>
+     <a href="/optimize" class="{% if active=='optimize' %}active{% endif %}">Optimization</a>
+     <a href="/about" class="{% if active=='about' %}active{% endif %}">About</a>
+
+    
+</div>
+
+<div class="main">
+    {% block content %}{% endblock %}
+</div>

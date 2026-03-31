@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>⚙️ Optimization</h2>
+</div>
+
+<div class="card">
+
+<form method="POST">
+
+    <label><b>Select Objective:</b></label><br><br>
+
+    <select name="mode" class="dropdown">
+        <option value="max" {% if mode == "max" %}selected{% endif %}>
+            Maximize Output
+        </option>
+        <option value="min" {% if mode == "min" %}selected{% endif %}>
+            Minimize Output
+        </option>
+    </select>
+
+    <br><br>
+
+    <button type="submit">🚀 Run Optimization</button>
+
+</form>
+
+</div>
+
+{% if output %}
+
+<div class="card">
+    <h3>
+        {% if mode == "max" %}
+            Maximum Predicted Value: {{ output }}
+        {% else %}
+            Minimum Predicted Value: {{ output }}
+        {% endif %}
+    </h3>
+
+    <table class="table">
+        <tr>
+            <th>Feature</th>
+            <th>Optimal Value</th>
+        </tr>
+
+        {% for key, val in inputs.items() %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ val }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

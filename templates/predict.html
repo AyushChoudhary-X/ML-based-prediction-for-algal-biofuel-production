@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+
+<h2>🔮 Prediction</h2>
+<p>Using Best Model: <b>{{ best }}</b></p>
+
+<form method="POST">
+
+    <div class="input-grid">
+        {% for f in features %}
+        <input type="number" step="any" name="{{ f }}" placeholder="{{ f }}">
+        {% endfor %}
+    </div>
+
+    <br>
+    <button type="submit">🚀 Predict</button>
+
+</form>
+
+</div>
+
+{% if prediction is not none %}
+
+<div class="card">
+
+<h2>📊 Prediction Result</h2>
+
+<table class="table">
+    <tr>
+        <th>Predicted Value</th>
+    </tr>
+    <tr class="best-row">
+        <td>{{ prediction }}</td>
+    </tr>
+</table>
+
+<br>
+
+<a href="/download_prediction">
+    <button>📥 Download Prediction</button>
+</a>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

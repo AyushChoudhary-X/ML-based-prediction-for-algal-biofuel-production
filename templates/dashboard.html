@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>📊 Model Comparison Dashboard</h2>
+    <p>Best Model: <b>{{ best }}</b></p>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<!-- -------- TABLE -------- -->
+<div class="card">
+    <h3>📋 Model Performance</h3>
+
+    <table class="table">
+        <tr>
+            <th>Model</th>
+            <th>R² Score</th>
+            <th>RMSE</th>
+        </tr>
+
+        {% for r in results %}
+        <tr {% if r.name == best %} class="best-row" {% endif %}>
+            <td>{{ r.name }}</td>
+            <td>{{ "%.4f"|format(r.r2) }}</td>
+            <td>{{ "%.4f"|format(r.rmse) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- CSV Download -->
+<div class="card">
+    <a href="{{ url_for('download_results') }}" class="btn">
+        Download Model Evaluation Results (CSV)
+    </a>
+
+    <p style="margin-top:10px; font-size: 14px; color: gray;">
+        Includes test features, actual values, and predictions from all models.
+    </p>
+</div>
+
+<!-- -------- R2 CHART -------- -->
+<div class="card">
+    <div id="r2_chart"></div>
+</div>
+
+<!-- -------- RMSE CHART -------- -->
+<div class="card">
+    <div id="rmse_chart"></div>
+</div>
+
+<!-- -------- SCATTER -------- -->
+<div class="card">
+    <div id="scatter_chart"></div>
+</div>
+
+<!-- Store JSON safely -->
+<script id="r2-data" type="application/json">
+    {{ chart_r2 | safe }}
+</script>
+
+<script id="rmse-data" type="application/json">
+    {{ chart_rmse | safe }}
+</script>
+
+<script id="scatter-data" type="application/json">
+    {{ chart_scatter | safe }}
+</script>
+
+<script>
+    const r2_fig = JSON.parse(document.getElementById("r2-data").textContent);
+    Plotly.newPlot('r2_chart', r2_fig.data, r2_fig.layout);
+
+    const rmse_fig = JSON.parse(document.getElementById("rmse-data").textContent);
+    Plotly.newPlot('rmse_chart', rmse_fig.data, rmse_fig.layout);
+
+    const scatter_fig = JSON.parse(document.getElementById("scatter-data").textContent);
+    Plotly.newPlot('scatter_chart', scatter_fig.data, scatter_fig.layout);
+</script>
+
+{% endblock %}

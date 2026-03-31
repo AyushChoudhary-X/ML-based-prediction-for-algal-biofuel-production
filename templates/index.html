@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="/static/style.css">
+
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<!-- Title -->
+<div class="card">
+    <h2>🔬 Anaerobic Digestion ML App</h2>
+
+    <p><b>Developed by:</b> Asmita Bagchi | Chemical Engineering | Jadavpur University | 3rd Year</p>
+
+    <p>
+        This application allows you to upload your dataset, train multiple machine 
+        learning models, compare their performance, and predict methane yield or 
+        biogas output with high accuracy.
+    </p>
+
+    <p>
+        It combines data analysis, visualization, and optimization into a single 
+        easy-to-use interface designed for engineers and researchers.
+    </p>
+</div>
+
+<!-- Instructions -->
+
+<div class="card">
+    <h3>📌 How to Use</h3>
+
+    <ul>
+        <li>📂 Upload your CSV dataset with neatly labled columns at first row</li>
+        <li>🎯 Select the target variable</li>
+        <li>⚙️ Choose machine learning models</li>
+        <li>🚀 Train and evaluate performance</li>
+        <li>🔮 Use the prediction interface</li>
+    </ul>
+</div>
+
+<!-- Upload Section -->
+<div class="card">
+    <h2>📂 Upload Dataset</h2>
+
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+
+        <label class="file-upload">
+            Choose CSV File
+            <input type="file" name="file" id="fileInput" required>
+        </label>
+
+        <p id="fileName">No file selected</p>
+
+        <button type="submit">🚀 Upload</button>
+    </form>
+
+</div>
+
+
+<script>
+    document.getElementById("fileInput").addEventListener("change", function () {
+        let fileName = this.files[0]?.name || "No file selected";
+        document.getElementById("fileName").innerText = fileName;
+    });
+</script>
+
+{% endblock %}

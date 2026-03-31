@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<p><b>Developed by:</b> Asmita Bagchi | Chemical Engineering | Jadavpur University | 3rd Year</p>
+
+<div class="card">
+    <h2>About This Project</h2>
+</div>
+
+<div class="card">
+    <p>
+        The <b>🔬 Anaerobic Digestion ML App</b> is an interactive machine learning platform 
+        designed to analyze, predict, and optimize biogas production parameters such as 
+        methane yield. This application integrates multiple machine learning models, 
+        feature engineering techniques, and optimization strategies into a single 
+        user-friendly dashboard.
+    </p>
+
+    <p>
+        It is specifically built to assist researchers, students, and engineers in 
+        understanding how different input parameters influence anaerobic digestion 
+        performance and to support data-driven decision making.
+    </p>
+</div>
+
+<div class="card">
+    <h3>What This App Can Do</h3>
+
+    <ul>
+        <li>Upload and process custom CSV datasets</li>
+        <li>Train multiple ML models simultaneously</li>
+        <li>Compare models using R² Score and RMSE</li>
+        <li>Visualize performance using interactive graphs</li>
+        <li>Analyze feature importance for interpretability</li>
+        <li>Predict outputs based on user input</li>
+        <li>Download results and predictions as CSV files</li>
+        <li>Optimize input parameters for best output</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>Machine Learning Models Used</h3>
+
+    <p>The app supports multiple regression algorithms:</p>
+
+    <ul>
+        <li>Random Forest Regressor</li>
+        <li>Support Vector Regression (SVR)</li>
+        <li>Linear Regression</li>
+        <li>K-Nearest Neighbors (KNN)</li>
+        <li>XGBoost Regressor</li>
+        <li>Artificial Neural Network (ANN)</li>
+    </ul>
+
+    <p>
+        The best-performing model is automatically selected based on the highest 
+        R² score.
+    </p>
+</div>
+
+<div class="card">
+    <h3>Model Evaluation Dashboard</h3>
+
+    <p>
+        The dashboard provides a complete comparison of model performance using:
+    </p>
+
+    <ul>
+        <li>R² Score comparison chart</li>
+        <li>RMSE comparison chart</li>
+        <li>Actual vs Predicted scatter plot</li>
+    </ul>
+
+    <p>
+        Interactive Plotly graphs allow zooming, hovering, and detailed inspection 
+        of results.
+    </p>
+</div>
+
+<div class="card">
+    <h3>Feature Importance Analysis</h3>
+
+    <p>
+        The app identifies the most influential features affecting predictions using:
+    </p>
+
+    <ul>
+        <li>Tree-based feature importance (Random Forest, XGBoost)</li>
+        <li>Coefficient-based importance (Linear models)</li>
+    </ul>
+
+    <p>
+        This helps users understand which input variables have the greatest impact 
+        on the output.
+    </p>
+</div>
+
+<div class="card">
+    <h3>Data Export Features</h3>
+
+    <p>The application provides downloadable insights:</p>
+
+    <ul>
+        <li>Full dataset with Actual vs Predicted values</li>
+        <li>Predictions with auto-filled missing inputs</li>
+    </ul>
+
+    <p>
+        This ensures transparency and allows further analysis outside the platform.
+    </p>
+</div>
+
+<div class="card">
+    <h3>Optimization Module</h3>
+
+    <p>
+        The optimization feature determines the best input conditions to either:
+    </p>
+
+    <ul>
+        <li>Maximize output</li>
+        <li>Minimize output</li>
+    </ul>
+
+    <p>
+        It uses the trained best-performing model to explore input combinations and 
+        identify optimal operating conditions.
+    </p>
+</div>
+
+<div class="card">
+    <h3>Technologies Used</h3>
+
+    <ul>
+        <li>Python (Flask Framework)</li>
+        <li>Scikit-learn & XGBoost</li>
+        <li>Pandas & NumPy</li>
+        <li>Matplotlib & Plotly</li>
+        <li>HTML, CSS (Jinja Templates)</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>Objective of the Project</h3>
+
+    <p>
+        The primary objective of this project is to bridge the gap between 
+        chemical engineering processes and modern machine learning techniques 
+        by creating an accessible, real-time analytical tool.
+    </p>
+
+    <p>
+        It demonstrates how ML can be applied to real-world engineering problems 
+        such as anaerobic digestion, process optimization, and performance prediction.
+    </p>
+</div>
+
+<div class="card">
+    <h3>Final Note</h3>
+
+    <p>
+        This project showcases a complete machine learning pipeline — from data 
+        preprocessing and model training to evaluation, visualization, and optimization — 
+        all within an interactive web application.
+    </p>
+
+    <p>
+        It reflects the integration of engineering knowledge with modern AI tools 
+        to build practical, scalable solutions.
+    </p>
+</div>
+
+{% endblock %}

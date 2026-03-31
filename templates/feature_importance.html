@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>🔥 Feature Importance</h2>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+{% for model, chart in charts.items() %}
+
+<div class="card">
+    <h3>{{ model }}</h3>
+
+    <div 
+        class="plotly-chart"
+        id="chart-{{ loop.index }}"
+        data-chart='{{ chart | safe }}'>
+    </div>
+
+</div>
+
+{% endfor %}
+
+<script>
+    document.querySelectorAll(".plotly-chart").forEach(function(el) {
+        const fig = JSON.parse(el.dataset.chart);
+
+        Plotly.newPlot(
+            el.id,
+            fig.data,
+            fig.layout
+        );
+    });
+</script>
+
+{% endblock %}

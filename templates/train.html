@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- DATASET PREVIEW -->
+{% if preview %}
+<div class="card">
+    <h2>📊 Dataset Preview</h2>
+    <div class="table-container">
+        {{ preview|safe }}
+    </div>
+</div>
+{% endif %}
+
+<!-- TRAINING SETTINGS -->
+<div class="card">
+
+    <h2>⚙️ Model Training Setup</h2>
+
+    <form method="POST" action="/train">
+
+        <!-- TARGET DROPDOWN -->
+        <label class="label">🎯 Select Target Column</label><br>
+        <select name="target" class="dropdown">
+            {% for col in columns %}
+            <option value="{{ col }}">{{ col }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <!-- MODEL SELECTION -->
+        <label class="label">🤖 Select Models</label>
+
+        <br>
+        <!-- SELECT ALL -->
+        <label class="select-all">
+            &nbsp;
+            <input type="checkbox" id="selectAll"> Select All Models
+        </label>
+
+        <div class="model-grid">
+
+            <label><input type="checkbox" name="models" value="Random Forest"> Random Forest</label>
+            <label><input type="checkbox" name="models" value="XGBoost"> XGBoost</label>
+            <label><input type="checkbox" name="models" value="SVR"> SVR</label>
+            <label><input type="checkbox" name="models" value="Linear Regression"> Linear Regression</label>
+            <label><input type="checkbox" name="models" value="KNN"> KNN</label>
+            <label><input type="checkbox" name="models" value="ANN"> ANN</label>
+
+        </div>
+        <br>
+        <button type="submit">🚀 Train Models</button>
+
+    </form>
+
+</div>
+
+
+<script>
+    document.getElementById("selectAll").addEventListener("change", function () {
+        let checkboxes = document.querySelectorAll('input[name="models"]');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+</script>
+
+{% endblock %}

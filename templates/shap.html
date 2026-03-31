@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>🧠 SHAP Explainability</h2>
+    <p>Understand how features influence predictions</p>
+</div>
+
+<div class="card">
+    <img src="data:image/png;base64,{{ shap_plot }}">
+</div>
+
+{% endblock %}

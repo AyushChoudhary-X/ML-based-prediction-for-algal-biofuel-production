@@ -20,7 +20,7 @@ def train_all_models(df, target, selected_models):
     X_full = df.drop(columns=[target])
     y = df[target]
 
-    # ---------------- 2. HANDLE MISSING VALUES & CATEGORICAL DATA (NEW FOR ALGAE) ----------------
+    # ---------------- 2. HANDLE MISSING VALUES & CATEGORICAL DATA ----------------
     # Separate numeric and categorical columns
     num_cols = X_full.select_dtypes(include=np.number).columns
     cat_cols = X_full.select_dtypes(exclude=np.number).columns
@@ -50,7 +50,6 @@ def train_all_models(df, target, selected_models):
     X_test_scaled = scaler.transform(X_test)
 
     # ---------------- 6. MODELS ----------------
-    # Added parameters to Random Forest based on your specific Algal Biofuel research paper
     all_models = {
         "Random Forest": RandomForestRegressor(n_estimators=50, max_depth=20, min_samples_split=2, min_samples_leaf=2),
         "SVR": SVR(),
@@ -89,7 +88,6 @@ def train_all_models(df, target, selected_models):
         if hasattr(model, "feature_importances_"):
             feature_importance[name] = model.feature_importances_
         elif hasattr(model, "coef_"):
-            # Handle multiple dimensions for NN or multi-output models
             coefs = np.abs(model.coef_)
             if coefs.ndim > 1:
                 coefs = np.mean(coefs, axis=0)
@@ -107,9 +105,64 @@ def train_all_models(df, target, selected_models):
         "feature_names": list(X.columns),
         "scaler": scaler,
         "X_test": X_test.reset_index(drop=True),
-        "X": X,  # IMPORTANT for prediction + optimization
+        "X": X,  
         "feature_importance": feature_importance
     }
 
+# ================= PREDICTION =================
+def predict_best(input_dict, data):
+    model = data["models"][data["best_model"]]
+    scaler = data["scaler"]
+    X = data["X"]
+    features = data["feature_names"]
+
+    df = pd.DataFrame([input_dict])
+
+    # Ensure correct column order
+    df = df.reindex(columns=features)
+
+    # Fill missing values
+    for col in df.columns:
+        if df[col].iloc[0] == "" or pd.isna(df[col].iloc[0]):
+            df[col] = X[col].mean()
+        else:
+            df[col] = float(df[col])
+
+    df_scaled = scaler.transform(df)
+    return round(model.predict(df_scaled)[0], 4)
+
 # ================= OPTIMIZATION =================
-# (Keep your friend's `predict_best` and `optimize_inputs` functions exactly as they were here)
+def optimize_inputs(data, mode="max", n_iter=1000):
+    model = data["models"][data["best_model"]]
+    scaler = data["scaler"]
+    X = data["X"]
+    features = data["feature_names"]
+
+    if mode == "max":
+        best_output = -np.inf
+    else:
+        best_output = np.inf
+
+    best_input = None
+
+    for _ in range(n_iter):
+        sample = []
+        for col in features:
+            val = np.random.uniform(X[col].min(), X[col].max())
+            sample.append(val)
+
+        sample_array = np.array(sample).reshape(1, -1)
+        sample_scaled = scaler.transform(sample_array)
+        pred = model.predict(sample_scaled)[0]
+
+        if mode == "max":
+            if pred > best_output:
+                best_output = pred
+                best_input = sample
+        else:
+            if pred < best_output:
+                best_output = pred
+                best_input = sample
+
+    best_input_dict = dict(zip(features, best_input))
+    return best_input_dict, round(best_output, 4)

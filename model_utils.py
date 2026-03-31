@@ -5,7 +5,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from xgboost import XGBRegressor
 from sklearn.neural_network import MLPRegressor
 
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.feature_selection import VarianceThreshold
@@ -17,8 +17,16 @@ import numpy as np
 def train_all_models(df, target, selected_models):
 
     # ---------------- 1. SEPARATE TARGET & FEATURES ----------------
+    # Drop rows where the target column is missing to prevent fit() crashes
+    df = df.dropna(subset=[target]).copy()
+    
     X_full = df.drop(columns=[target])
     y = df[target]
+
+    # If the target is categorical (text), convert to numerical for regressors
+    if y.dtype == 'object' or y.dtype.name == 'category':
+        le = LabelEncoder()
+        y = le.fit_transform(y)
 
     # ---------------- 2. HANDLE MISSING VALUES & CATEGORICAL DATA ----------------
     # Separate numeric and categorical columns
@@ -92,6 +100,9 @@ def train_all_models(df, target, selected_models):
             if coefs.ndim > 1:
                 coefs = np.mean(coefs, axis=0)
             feature_importance[name] = coefs
+        else:
+            # Fallback for models without feature importance (like SVR, KNN)
+            feature_importance[name] = np.zeros(X.shape[1])
 
     # ---------------- 9. BEST MODEL ----------------
     best_model = max(results, key=lambda x: x["r2"])["name"]
@@ -100,7 +111,7 @@ def train_all_models(df, target, selected_models):
         "models": trained_models,
         "results": results,
         "best_model": best_model,
-        "y_test": y_test.reset_index(drop=True),
+        "y_test": pd.Series(y_test).reset_index(drop=True),
         "predictions": predictions,
         "feature_names": list(X.columns),
         "scaler": scaler,
